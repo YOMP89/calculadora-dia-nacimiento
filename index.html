@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Día de Nacimiento</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f5f5f5;
+            font-family: 'Arial', sans-serif;
+            color: #2c2c2c;
+        }
+
+        .container {
+            background: white;
+            padding: 40px 60px;
+            border-radius: 15px;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .date-input {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            margin: 15px 0;
+            width: 300px;
+            transition: border-color 0.3s ease;
+        }
+
+        .date-input:focus {
+            outline: none;
+            border-color: #c0c0c0;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            background: #2c2c2c;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #555;
+        }
+
+        .result {
+            margin-top: 25px;
+            font-size: 1.2em;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .result.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 400px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            .date-input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>¿Qué día naciste?</h1>
+        <input type="date" class="date-input" id="birthDate">
+        <button class="btn" onclick="calculateDay()">Calcular</button>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function calculateDay() {
+            const input = document.getElementById('birthDate').value;
+            const resultDiv = document.getElementById('result');
+            
+            if (!input) {
+                alert('Seleccione una fecha válida');
+                return;
+            }
+
+            // Corrección principal: Parsear fecha en formato UTC
+            const [year, month, day] = input.split('-').map(Number);
+            const date = new Date(Date.UTC(year, month - 1, day)); // Meses empiezan en 0
+            
+            // Validar fecha real
+            if (isNaN(date.getTime()) || 
+                date.getUTCFullYear() !== year ||
+                date.getUTCMonth() + 1 !== month ||
+                date.getUTCDate() !== day) {
+                resultDiv.innerHTML = 'Fecha inválida o inexistente';
+                resultDiv.className = 'result show';
+                return;
+            }
+
+            const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+            const dayName = days[date.getUTCDay()];
+            
+            const formattedDate = `${day} de ${getMonthName(month)} de ${year}`;
+
+            resultDiv.innerHTML = `Naciste un <strong>${dayName}</strong><br>${formattedDate}`;
+            resultDiv.className = 'result show';
+        }
+
+        function getMonthName(month) {
+            const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 
+                           'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+            return months[month - 1];
+        }
+    </script>
+</body>
+</html>
+
+                    
